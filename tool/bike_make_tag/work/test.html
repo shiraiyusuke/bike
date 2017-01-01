@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Marker Canvas</title>
+    <script type="text/javascript" src="MarkerCanvas.js"></script>
+</head>
+<body>
+<h1>Marker Canvas</h1>
+<canvas id="MarkerCanvas" style="border:1px solid gray;"></canvas>
+<form>
+    <button type="button" onclick="markerdel(this.form.elements['markerindex'].value)">削除</button>
+    マーカー番号：<input name="markerindex" value="" size="5"></input>
+</form>
+<script type="text/javascript">
+    var myMarkerCanvas = new MarkerCanvas(
+        {doc:document,
+            id:"MarkerCanvas",
+            width:640,
+            height:480,
+            imagesrc:"./public/images/reft_resize/000220160713_l_300_400.jpg"
+        }
+    );
+    function markerdel(index){
+        myMarkerCanvas.markerdel(index);
+    }
+</script>
+</body>
+</html>

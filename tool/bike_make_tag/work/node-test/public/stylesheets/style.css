@@ -1,0 +1,42 @@
+.input {
+  display: inline-block;
+  padding: 10px;
+  font-size: 12px;
+  vertical-align: middle;
+  border: 1px #ccc solid;
+  background-color: #fff;
+}
+.submit {
+  display: inline-block;
+  padding: 7px 10px;
+  font-size: 15px;
+  font-weight: bold;
+  vertical-align: middle;
+  border: 1px #ccc solid;
+  background-color: #fff;
+  -webkit-appearance: none;
+}
+.submit_point {
+  text-align: center;
+  display: inline-block;
+  padding: 6px 10px;
+  font-size: 15px;
+  font-weight: bold;
+  vertical-align: middle;
+  border: 1px #ccc solid;
+  background-color: #FFF;
+  -webkit-appearance: none;
+}
+.input_point{
+  width: 20px;
+}
+.button_reset{
+  text-align: right;
+  margin-right: auto;
+  display: inline-block;
+  padding: 6px 10px;
+  font-size: 15px;
+  font-weight: bold;
+  border: 1px #ccc solid;
+  background-color: #FFF;
+}

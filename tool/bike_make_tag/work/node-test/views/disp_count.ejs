@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+<div class="wrapper">
+    <form action="/disp_count" method="get">
+        <button class="submit" style="position: absolute; right: 0px; top: 0px"> 現在の枚数を確認 </button>
+    </form>
+    <%= tag_count %>
+</div>
+</body>
+</html>

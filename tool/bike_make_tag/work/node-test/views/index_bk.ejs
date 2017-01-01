@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="format-detection" content="telephone=no">
+        <title><%= title %></title>
+        <!--<link rel='stylesheet' href='/stylesheets/style.css' /> -->
+    </head>
+    <body>
+    <div class="wrapper">
+        <form action="/" method="post" class="board-form">
+            タイトル: <input type="text" name="title" class="input" required><br>
+            <br>
+            <button type="submit" class="submit">ボード作成</button>
+            <table border="1" cellspacing="0">
+            <% imageList.forEach(function(imageItem) { %>
+
+            <% i += 1;%>
+                <tr>
+                    <td>    <%= imageItem.id %> </td>
+                    <td>    <%= imageItem.direction %>  </td>
+                    <td>    <img src=<%= imageItem.image_path %>>   </td>
+                    <td>    <p> i <%= i %>   </p></td>
+                    <td>    <p> i % 3 <%= i % 3 %>   </p></td>
+                    <% if(i % 3 == 0 && i != 0){ %>
+                        </tr>
+                        <tr>
+                    <% } %>
+            <% }); %>
+                        </tr>
+            </table>
+        </form>
+    </div>
+  </body>
+</html>

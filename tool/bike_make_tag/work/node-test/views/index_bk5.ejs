@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+<div class="wrapper">
+    <form action="/disp_count" method="get">
+        <button class="submit" style="position: absolute; right: 0px; top: 0px"> 現在の枚数を確認 </button>
+    </form>
+
+    <form action="/" method="post" class="board-form" id="target1">
+        タイトル: <input type="text" name="title" class="input" required><br>
+        <br>
+        <button type="submit" class="submit">ボード作成</button>
+        <table border="1" cellspacing="1">
+            <tr>
+            <% var i =0 %>
+            <% imageList.forEach(function(imageItem) { %>
+                <% i += 1;%>
+                <td>    <%= imageItem.id %></td>
+                <td>    <img id ="img_id<%=i%>" name="img_file" src=<%= imageItem.image_path %>>   </td>
+        <% if(i % 2 == 0){ %>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <button type="submit" class="submit_point" name="button<%=i-1%>" > aaa </button>
+                    クリック回数:<span id="click_counter_id<%=i-1%>" style="margin-left: 10px;">0</span>
+                    <p>左上[x]/[y]: <input id="x_l_u<%=i-1%>" class="input_point"></input>px/<input id="y_l_u<%=i-1%>" class="input_point"></input>px
+                       右上[x]/[y]: <input id="x_r_u<%=i-1%>" class="input_point"></input>px/<input id="y_r_u<%=i-1%>" class="input_point"></input>px<br>
+                       左中[x]/[y]: <input id="x_l_m<%=i-1%>" class="input_point"></input>px/<input id="y_l_m<%=i-1%>" class="input_point"></input>px
+                       右中[x]/[y]: <input id="x_r_m<%=i-1%>" class="input_point"></input>px/<input id="y_r_m<%=i-1%>" class="input_point"></input>px<br>
+                       左下[x]/[y]: <input id="x_l_b<%=i-1%>" class="input_point"></input>px/<input id="y_l_b<%=i-1%>" class="input_point"></input>px
+                       右下[x]/[y]: <input id="x_r_b<%=i-1%>" class="input_point"></input>px/<input id="y_r_b<%=i-1%>" class="input_point"></input>px</p>
+                </td>
+                <td colspan="2">
+                    <button type="submit" class="submit_point" name="button<%=i-1%>" > aaa </button>
+                    <p>左上[x]/[y]: <input id="x_l_u<%=i%>" class="input_point"></input>px/<input id="y_l_u<%=i%>" class="input_point"></input>px
+                       右上[x]/[y]: <input id="x_r_u<%=i%>" class="input_point"></input>px/<input id="y_r_u<%=i%>" class="input_point"></input>px<br>
+                       左中[x]/[y]: <input id="x_l_m<%=i%>" class="input_point"></input>px/<input id="y_l_m<%=i%>" class="input_point"></input>px
+                       右中[x]/[y]: <input id="x_r_m<%=i%>" class="input_point"></input>px/<input id="y_r_m<%=i%>" class="input_point"></input>px<br>
+                       左下[x]/[y]: <input id="x_l_b<%=i%>" class="input_point"></input>px/<input id="y_l_b<%=i%>" class="input_point"></input>px
+                       右下[x]/[y]: <input id="x_r_b<%=i%>" class="input_point"></input>px/<input id="y_r_b<%=i%>" class="input_point"></input>px</p>
+                </td>
+                <!--<td colspan="2">
+                    <p>左上[x]/[y]: <input id="x_l_u<%=i%>" class="input_point"></input>px/<input id="y_l_u<%=i%>" class="input_point"></input>px
+                       右上[x]/[y]: <input id="x_r_u<%=i%>" class="input_point"></input>px/<input id="y_r_u<%=i%>" class="input_point"></input>px<br>
+                       左中[x]/[y]: <input id="x_l_m<%=i%>" class="input_point"></input>px/<input id="y_l_m<%=i%>" class="input_point"></input>px
+                       右中[x]/[y]: <input id="x_r_m<%=i%>" class="input_point"></input>px/<input id="y_r_m<%=i%>" class="input_point"></input>px<br>
+                       左下[x]/[y]: <input id="x_l_b<%=i%>" class="input_point"></input>px/<input id="y_l_b<%=i%>" class="input_point"></input>px
+                       右下[x]/[y]: <input id="x_r_b<%=i%>" class="input_point"></input>px/<input id="y_r_b<%=i%>" class="input_point"></input>px</p>
+                </td>-->
+            </tr>
+            <tr>
+        <% } %>
+            <% }); %>
+            </tr>
+        </table>
+    </form>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+    <script type="text/javascript">
+        // クリック回数のカウント用
+        window.onload = function () {
+            document.getElementById("img_id1").onclick = function(){
+                countUp();
+            };
+        }
+        var $count = 0;
+        function countUp() {
+            document.getElementById("click_counter_id1").innerHTML = ++$count;
+        }
+
+        $("img[name='img_file']").on('click', function(e){
+        //function get_point(){
+            // マウスイベントを設定
+            var mouseEvent = function(e) {
+                alert("mouseEvent!");
+                // 動作を停止
+                e.preventDefault();
+
+                // マウス位置を取得する
+                var mouseX = e.pageX;	// X座標
+                var mouseY = e.pageY;	// Y座標
+
+                // elementのID名を取得
+                var img_id = e.toElement.id;
+                //alert(img_id);
+
+                // 要素の位置を取得
+                var element = document.getElementById(img_id);
+                var rect = element.getBoundingClientRect();
+
+                // 要素の位置座標を計算
+                var positionX = rect.left + window.pageXOffset;	// 要素のX座標
+                var positionY = rect.top + window.pageYOffset;	// 要素のY座標
+
+                // 要素の左上からの距離を計算
+                var offsetX = mouseX - positionX;
+                var offsetY = mouseY - positionY;
+
+
+                var click_cnt = document.getElementById("click_counter_id1").outerText;
+
+                // 結果の書き出し
+                if (click_cnt == 0) {
+                    alert("aaa");
+                    xluElement.value = Math.floor(offsetX);
+                    yluElement.value = Math.floor(offsetY);
+                } else if (click_cnt == 1) {
+                    alert("bbb");
+                    xruElement.value = Math.floor(offsetX);
+                    yruElement.value = Math.floor(offsetY);
+                } else if (click_cnt == 1) {
+                    alert("ccc");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                }
+            }
+
+            var img_id = e.toElement.id;
+            // イベントの設定
+            var element = document.getElementById(img_id) ;
+            element.addEventListener("click", mouseEvent , false) ;
+            // マウスオーバー時にイベントをリッスンするかどうかの設定
+            //element.addEventListener( "mousemove", mouseEvent , false) ;
+
+            var click_cnt = document.getElementById("click_counter_id1").outerText;
+
+            if (img_id=="img_id1"){
+                if(click_cnt ==0) {
+                    alert("aa");
+                    var xluElement = document.getElementById("x_l_u1");
+                    var yluElement = document.getElementById("y_l_u1");
+                }else if(click_cnt==1){
+                    alert("bb");
+                    var xruElement = document.getElementById("x_r_u1");
+                    var yruElement = document.getElementById("y_r_u1");
+                }else if(click_cnt==2){
+                    alert("cc");
+                    var xlmElement = document.getElementById("x_l_m1");
+                    var ylmElement = document.getElementById("y_l_m1");
+                }
+            }
+            /*
+            } else if(id1=="target2"){
+                var x1 = "x12"; var y1 = "y12"; var x2 ="x22"; var y2 = "y22"; var x3 = "x32"; var y3 ="y32";
+            } else if(id1=="target3"){
+                var x1 = "x13"; var y1 = "y13"; var x2 ="x23"; var y2 = "y23"; var x3 = "x33"; var y3 ="y33";
+            } else if(id1=="target4"){
+                var x1 = "x14"; var y1 = "y14"; var x2 ="x24"; var y2 = "y24"; var x3 = "x34"; var y3 ="y34";
+            } else if(id1=="target5"){
+                var x1 = "x15"; var y1 = "y15"; var x2 ="x25"; var y2 = "y25"; var x3 = "x35"; var y3 ="y35";
+            } else if(id1=="target6"){
+                var x1 = "x16"; var y1 = "y16"; var x2 ="x26"; var y2 = "y26"; var x3 = "x36"; var y3 ="y36";
+            } else if(id1=="target7"){
+                var x1 = "x17"; var y1 = "y17"; var x2 ="x27"; var y2 = "y27"; var x3 = "x37"; var y3 ="y37";
+            } else if(id1=="target8"){
+                var x1 = "x18"; var y1 = "y18"; var x2 ="x28"; var y2 = "y28"; var x3 = "x38"; var y3 ="y38";
+            } else if(id1=="target9"){
+                var x1 = "x19"; var y1 = "y19"; var x2 ="x29"; var y2 = "y29"; var x3 = "x39"; var y3 ="y39";
+            } else if(id1=="target10"){
+                var x1 = "x110"; var y1 = "y110"; var x2 ="x210"; var y2 = "y210"; var x3 = "x310"; var y3 ="y310";
+            } else if(id1=="target11"){
+                var x1 = "x111"; var y1 = "y111"; var x2 ="x211"; var y2 = "y211"; var x3 = "x311"; var y3 ="y311";
+            } else if(id1=="target12"){
+                var x1 = "x112"; var y1 = "y112"; var x2 ="x212"; var y2 = "y212"; var x3 = "x312"; var y3 ="y312";
+            }*/
+
+            // 結果書き出し用の要素
+            /*var xluElement = document.getElementById(xlu) ;
+            var yluElement = document.getElementById(ylu) ;
+            var xruElement = document.getElementById(xru) ;
+            var yruElement = document.getElementById(yru) ;
+            var xlmElement = document.getElementById(xlm) ;
+            var ylmElement = document.getElementById(ylm) ;
+            var xrmElement = document.getElementById(xrm) ;
+            var yrmElement = document.getElementById(yrm) ;
+            var xlbElement = document.getElementById(xlb) ;
+            var ylbElement = document.getElementById(ylb) ;
+            var xrbElement = document.getElementById(xrb) ;
+            var yrbElement = document.getElementById(yrb) ;*/
+        //}
+        });
+
+    </script>
+</div>
+</body>
+</html>
