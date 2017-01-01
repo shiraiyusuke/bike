@@ -331,21 +331,26 @@ def get_data(driver, date):
     out_str_list.append(str(movie_l.encode('utf-8')))
     out_str_list.append(str(movie_r.encode('utf-8')))
 
-    print bike_no.encode('utf-8') + '完了'
+    print(bike_no.encode('utf-8') + '完了')
 
     return '"",""'.join(out_str_list)
 
-def chrome(file_no):
+def chrome(driver_file, id_info_file):
     try:
-        driver = webdriver.Chrome(executable_path='/usr/local/git_local/python_study/scraping/bike/etc/chromedriver')
+        with open(id_info_file) as info_file:
+            for line in info_file:
+                values = line.rstrip().split(' ')
+                if values[0] == 'id':
+                    id = values[1]
+                elif values[0] == 'pass':
+                    password = values[1]
+
+        driver = webdriver.Chrome(executable_path=driver_file)
         driver.get('http://bds.jupiter.ac/')
-        driver.find_element_by_id('UserName').send_keys('81589')
-        driver.find_element_by_id('Password').send_keys('ibao2002')
+        driver.find_element_by_id('UserName').send_keys(id)
+        driver.find_element_by_id('Password').send_keys(password)
         driver.find_element_by_class_name('icon-hand-right').click()
         driver.find_element_by_class_name('icon-ok').click()
-
-        # driver.find_element(By.XPATH, '//*[@id="wrap"]/div[2]/div[1]/div[2]/div[1]/table[1]/tbody/tr[2]/td/div[4]').click()
-        # driver.find_element(By.XPATH, '//*[@id="wrap"]/div[2]/div[1]/div[2]/div[1]/table[1]/tbody/tr[2]/td/div[4]/ul/li[1]').click()
 
         CB_file = '../data/url/CB1300/url_list.txt'
         with open(CB_file, 'r') as in_file:
@@ -354,9 +359,12 @@ def chrome(file_no):
                 date = values[0]
                 url = values[2]
                 driver.get(url)
-                try:bike_published_info = driver.find_element(By.XPATH, '//*[@id="_form"]/div/div[2]/div/table[1]/tbody/tr[1]/td[2]').text
-                except: bike_published_info = ' 0 '
+                try:
+                    bike_published_info = driver.find_element(By.XPATH, '//*[@id="_form"]/div/div[2]/div/table[1]/tbody/tr[1]/td[2]').text
+                except:
+                    bike_published_info = ' 0 '
                 bike_num = bike_published_info.split(' ')[1]
+                exit()
 
                 with open('../data/output/CB1300_' + date + '.csv', 'w') as out_f:
                     out_str = ''
@@ -368,68 +376,21 @@ def chrome(file_no):
                         out_str = out_str + str_del_brank + '\n'
                         driver.back()
                     out_f.write(out_str)
-                print str(date) + '完了'
-
-        """
-        sum = 0
-        result_dict = {}
-
-        if file_no == '1':
-            start = 2
-            end = 31
-            for i, hiddenId in enumerate(driver.find_elements(By.XPATH, "//input[@id='hiddenAccountId']")):
-                # print i + 1, hiddenId.get_attribute('value')
-                result_dict[i + 1] = hiddenId.get_attribute('value')
-            for i, LikeCount in enumerate(driver.find_elements(By.XPATH, "//span[@class='recentLikeCount']")):
-                # print i + 1, LikeCount.text
-                result_dict[i + 1] = result_dict[i + 1] + '\t' + LikeCount.text
-            for i, image in enumerate(driver.find_elements(By.XPATH, '//*[@id="main"]//*[@class="otherSexDetails"]/p/img')):
-                # print i + 1, image.get_attribute('src')
-                result_dict[i + 1] = result_dict[i + 1] + '\t' + image.get_attribute('src')
-            sum = i + 1
-        else :
-            start = (int(file_no) -1) * 30
-            end = int(file_no) * 30 + 1
-
-        for page_no in range(start, end):
-            time.sleep(3)
-            driver.get('https://zexy-koimusubi.net/searchConditionList/paging?sort=NEW&count=30&page=' + str(page_no))
-            for i, hiddenId in enumerate(driver.find_elements(By.XPATH, "//input[@id='hiddenAccountId']")):
-                # print sum + i + 1, hiddenId.get_attribute('value')
-                result_dict[sum + i + 1] = hiddenId.get_attribute('value')
-            for i, LikeCount in enumerate(driver.find_elements(By.XPATH, "//span[@class='recentLikeCount']")):
-                # print i + 1, LikeCount.text
-                result_dict[sum + i + 1] = result_dict[sum + i + 1] + '\t' + LikeCount.text
-            for i, image in enumerate(driver.find_elements(By.XPATH, '//*[@id="main"]//*[@class="otherSexDetails"]/p/img')):
-                # print sum + i + 1, image.get_attribute('src')
-                result_dict[sum + i + 1] = result_dict[sum + i + 1] + '\t' + image.get_attribute('src')
-            sum = sum + i + 1
-
-        with open('../data/result_' + file_no + '.tsv', 'w') as result:
-            lines = []
-            for key in result_dict.keys():
-                value = result_dict[key].split('\t')
-                accountid = value[0]
-                like_count = value[1]
-                image_url = value[2]
-                lines.append(accountid + '\t' + like_count + '\t' + image_url)
-                print accountid + '::' + like_count + '::' + image_url
-            result.write('\n'.join(lines))
-        """
+                print(str(date) + '完了')
 
     except Exception as e:
-        print e
+        print(e)
     finally:
         driver.close()
 
 if __name__ == '__main__':
     start = time.time()
-    print 'start :', start
-    file_no = '1'
-    # file_no = sys.argv[1]
-    chrome(file_no)
+    print('start :', start)
+    driver_file = '../../etc/chromedriver'
+    id_info_file = '../../etc/id_info.conf'
+    chrome(driver_file, id_info_file)
     elapsed_time = time.time() - start
-    print 'end :', time.time()
-    print 'elapsed :', elapsed_time
+    print('end :', time.time())
+    print('elapsed :', elapsed_time)
 
 
