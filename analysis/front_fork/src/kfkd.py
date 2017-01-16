@@ -56,8 +56,8 @@ def make_conv_model():
 
 def drew_sample(model1, model2):
     # sampleの[1:2]を変えるとサンプルが変化
-    sample1 = load(test=True)[0][1:2]  #[7:8]を変えるとサンプルが変化する。
-    sample2 = load2d(test=True)[0][1:2]
+    sample1 = load(test=True)[0][3:4]  #[7:8]を変えるとサンプルが変化する。
+    sample2 = load2d(test=True)[0][3:4]
     y_pred1 = model1.predict(sample1)[0]
     y_pred2 = model2.predict(sample2)[0]
 
@@ -109,13 +109,17 @@ def make_simple_model(model_architecture='', model_weight=''):
         print("y.shape == {}; y.min == {:.3f}; y.max == {:.3f}".format(y.shape, y.min(), y.max()))
 
         model = Sequential()
-        model.add(Dense(150, input_dim=120000))
+        model.add(Dense(800, input_dim=120000))
         model.add(Activation('relu'))
         model.add(Dense(12))
 
         sgd = SGD(lr=0.05, momentum=0.9, nesterov=True) # Nesterov accelerated gradient[NAG]を利用
         model.compile(loss='mean_squared_error', optimizer=sgd)
-        hist = model.fit(X, y, nb_epoch=40, validation_split=0.2) # validation_split=0.2でサンプルのうち20%をバリデーションに。
+        hist = model.fit(X, y, nb_epoch=300, validation_split=0.2) # validation_split=0.2でサンプルのうち20%をバリデーションに。
+
+        json_string = model.to_json()
+        open('../model/bike_model1_architecture_5.json', 'w').write(json_string)
+        model.save_weights('../model/bike_model1_weights_5.h5')
 
         plt.plot(hist.history['loss'], linewidth=3, label='train')
         plt.plot(hist.history['val_loss'], linewidth=3, label='valid')
@@ -126,9 +130,6 @@ def make_simple_model(model_architecture='', model_weight=''):
         plt.yscale('log')
         plt.show()
 
-        json_string = model.to_json()
-        open('../model/bike_model1_architecture_4.json', 'w').write(json_string)
-        model.save_weights('../model/bike_model1_weights_4.h5')
 
     elif model_architecture != '':
         # モデルの読み込み
@@ -190,27 +191,29 @@ def load2d(test=False, cols=None):
 
 
 if __name__ == '__main__':
-    model1_architecture = '../model/bike_model1_architecture_3.json'
-    model1_weight = '../model/bike_model1_weights_3.h5'
+    model1_architecture = '../model/bike_model1_architecture_4.json'
+    model1_weight = '../model/bike_model1_weights_4.h5'
     # make_simple_model(model1_architecture, model1_weight)
-    # make_simple_model()
+    make_simple_model()
 
 
-    make_conv_model()
-    model1_architecture = '../model/conv_model_architecture.json'
-    model1_weight = '../model/bike_conv_model_weights.h5'
+    # make_conv_model()
+    conv_model1_architecture = '../model/bike_conv_model_architecture.json'
+    conv_model1_weight = '../model/bike_conv_model_weights.h5'
 
     # モデルの読み込み
     model1 = model_from_json(open(model1_architecture).read())
     model1.load_weights(model1_weight)
+    conv_model1 = model_from_json(open(conv_model1_architecture).read())
+    conv_model1.load_weights(conv_model1_weight)
     #model2 = model_from_json(open(model2_architecture).read())
     #model2.load_weights(model2_weight)
 
     # ネットワーク描写
-    plot(model1, to_file='model2.png', show_shapes=True)
+    # plot(conv_model1, to_file='model2.png', show_shapes=True)
 
     # 1サンプルの描画
-    # drew_sample(model1, model2)
+    drew_sample(model1, conv_model1)
 
     # データオーグメンテーション
     # data_augmentation()
