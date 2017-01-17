@@ -335,48 +335,50 @@ def get_data(driver, date):
 
     return '"",""'.join(out_str_list)
 
+
+def search_table(driver):
+    """1ページ10個の行を持つテーブルが5つ。"""
+    out_str = ''
+    for table_num in range(1, 6):
+        for tr_num in range(2, 12):
+            try:
+                id_name = driver.find_element(By.XPATH, '//*[@id="listArea"]/table[' + str(table_num) + \
+                                            ']/tbody/tr['+ str(tr_num) + ']/td/input').get_attribute('value')
+            except:
+                continue
+            out_str = out_str + id_name + '\n'
+    return out_str
+
 def chrome(driver_file, id_info_file):
     try:
-        with open(id_info_file) as info_file:
-            for line in info_file:
-                values = line.rstrip().split(' ')
-                if values[0] == 'id':
-                    id = values[1]
-                elif values[0] == 'pass':
-                    password = values[1]
-
+        target_brand_shashu = 'yamaha__sr400'
+        # target_brand_shashu = 'honda__cb1300_super_four'
         driver = webdriver.Chrome(executable_path=driver_file)
-        driver.get('http://bds.jupiter.ac/')
-        driver.find_element_by_id('UserName').send_keys(id)
-        driver.find_element_by_id('Password').send_keys(password)
-        driver.find_element_by_class_name('icon-hand-right').click()
-        driver.find_element_by_class_name('icon-ok').click()
-
-        CB_file = '../data/url/CB1300/url_list.txt'
-        with open(CB_file, 'r') as in_file:
-            for line in in_file:
-                values = line.rstrip().split(',')
-                date = values[0]
-                url = values[2]
-                driver.get(url)
-                try:
-                    bike_published_info = driver.find_element(By.XPATH, '//*[@id="_form"]/div/div[2]/div/table[1]/tbody/tr[1]/td[2]').text
-                except:
-                    bike_published_info = ' 0 '
-                bike_num = bike_published_info.split(' ')[1]
-                exit()
-
-                with open('../data/output/CB1300_' + date + '.csv', 'w') as out_f:
-                    out_str = ''
-                    for i in range(int(bike_num)):
-                        # 一覧から、物件詳細ページ遷移
-                        driver.find_element(By.XPATH, '//*[@id="_form"]/div/div[2]/div/div/table/tbody/tr[' + str(i + 1) + ']/td[4]').click()
-                        bike_str = get_data(driver, date)
-                        str_del_brank = bike_str.replace('\n','')
-                        out_str = out_str + str_del_brank + '\n'
-                        driver.back()
-                    out_f.write(out_str)
-                print(str(date) + '完了')
+        # SR400の検索結果一覧ページ
+        driver.get('http://www.goobike.com/bike/' + target_brand_shashu + '.html')
+        try:
+            driver.find_element_by_id('pref_all').click()
+        except:
+            exit(1) # 全都道府県の指定でエラー
+        try:
+            driver.find_element(By.XPATH, '//*[@id="areaBox"]/form/p/input').click()
+        except:
+            exit(2) # 検索ボタン押下でエラー
+        # ページ数
+        all_page_num = driver.find_element(By.XPATH, '//*[@id="contents"]/form/ul[2]/li[1]/span').text
+        print 'page_num:' + all_page_num
+        out_str = ''
+        for i in range(int(all_page_num)):
+            write_str = search_table(driver)
+            print str(i + 1) + 'page finished'
+            out_str = out_str + write_str
+            try:
+                driver.find_element(By.XPATH, '//*[@id="contents"]/form/ul[2]/li[9]/a').click()
+            except:
+                break
+        with open('../data/' + target_brand_shashu + '_id_list.lst', 'w') as out_f:
+            out_f.write(out_str)
+        exit(1)
 
     except Exception as e:
         print(e)
