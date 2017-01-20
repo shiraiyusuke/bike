@@ -9,64 +9,84 @@
 </head>
 <body>
 <div class="wrapper">
-    <form action="/disp_count" method="get">
-        <button class="submit" style="position: absolute; right: 0px; top: 0px"> 現在の枚数を確認 </button>
-    </form>
+    <h2>バイクフロントフォーク座標入力</h2>
+    <form action="/" method="post" class="board-form" id="target1" style="display: inline">
 
-        <br>
-        <button type="submit" class="submit">ボード作成</button>
         <table border="1" cellspacing="1">
             <tr>
-            <% var i =0 %>
-            <% imageList.forEach(function(imageItem) { %>
-                <% i += 1;%>
-                <td>    <%= imageItem.image_id %></td>
+                <% var i =0 %>
+                <% imageList.forEach(function(imageItem) { %>
+                    <% i += 1;%>
+                <td>    <input id="label_id<%=i%>" name="table_img_id<%=i%>" value="<%= imageItem.image_id %>" size="3"></input></td>
                 <td>    <img id ="img_id<%=i%>" name="img_file" src=<%= imageItem.image_path %>>   </td>
-        <% if(i % 2 == 0){ %>
+            <% if(i % 2 == 0){ %>
             </tr>
             <tr>
                 <td colspan="2">
-                    <form action="/" method="post" class="board-form" id="target1" style="display: inline">
-                        <input type="hidden" name="img_table_id" value="<%= imageItem.image_id-1 %>"></input>
-                        <p>左上[x]/[y]: <input id="x_l_t<%=i-1%>" class="input_point" name="name_x_l_t<%=i-1%>" value="0"></input>px/
-                                       <input id="y_l_t<%=i-1%>" class="input_point"  name="name_y_l_t<%=i-1%>" value="0"></input>px
-                           右上[x]/[y]: <input id="x_r_t<%=i-1%>" class="input_point" name="name_x_r_t<%=i-1%>" value="0"></input>px/
-                                       <input id="y_r_t<%=i-1%>" class="input_point"  name="name_y_r_t<%=i-1%>" value="0"></input>px<br>
-                           左中[x]/[y]: <input id="x_l_m<%=i-1%>" class="input_point" name="name_x_l_m<%=i-1%>" value="0"></input>px/
-                                       <input id="y_l_m<%=i-1%>" class="input_point"  name="name_y_l_m<%=i-1%>" value="0"></input>px
-                           右中[x]/[y]: <input id="x_r_m<%=i-1%>" class="input_point" name="name_x_r_m<%=i-1%>" value="0"></input>px/
-                                       <input id="y_r_m<%=i-1%>" class="input_point"  name="name_y_r_m<%=i-1%>" value="0"></input>px<br>
-                           左下[x]/[y]: <input id="x_l_b<%=i-1%>" class="input_point" name="name_x_l_b<%=i-1%>" value="0"></input>px/
-                                       <input id="y_l_b<%=i-1%>" class="input_point"  name="name_y_l_b<%=i-1%>" value="0"></input>px
-                           右下[x]/[y]: <input id="x_r_b<%=i-1%>" class="input_point" name="name_x_r_b<%=i-1%>" value="0"></input>px/
-                                       <input id="y_r_b<%=i-1%>" class="input_point"  name="name_y_r_b<%=i-1%>" value="0"></input>px</p>
-                        <!--タイトル1: <input type="text" name="title" class="input" required><br>-->
-                        <button type="submit" class="submit_point" name="button<%=i-1%>" > 座標入力 </button>
-                    </form>
+                    <p>左上[x]/[y]: <input id="x_l_t<%=i-1%>" class="input_point" name="name_x_l_t<%=i-1%>" value="0"></input>px/
+                                   <input id="y_l_t<%=i-1%>" class="input_point"  name="name_y_l_t<%=i-1%>" value="0"></input>px
+                        右上[x]/[y]: <input id="x_r_t<%=i-1%>" class="input_point" name="name_x_r_t<%=i-1%>" value="0"></input>px/
+                                    <input id="y_r_t<%=i-1%>" class="input_point"  name="name_y_r_t<%=i-1%>" value="0"></input>px<br>
+                        左中[x]/[y]: <input id="x_l_m<%=i-1%>" class="input_point" name="name_x_l_m<%=i-1%>" value="0"></input>px/
+                                    <input id="y_l_m<%=i-1%>" class="input_point"  name="name_y_l_m<%=i-1%>" value="0"></input>px
+                        右中[x]/[y]: <input id="x_r_m<%=i-1%>" class="input_point" name="name_x_r_m<%=i-1%>" value="0"></input>px/
+                                    <input id="y_r_m<%=i-1%>" class="input_point"  name="name_y_r_m<%=i-1%>" value="0"></input>px<br>
+                        左下[x]/[y]: <input id="x_l_b<%=i-1%>" class="input_point" name="name_x_l_b<%=i-1%>" value="0"></input>px/
+                                    <input id="y_l_b<%=i-1%>" class="input_point"  name="name_y_l_b<%=i-1%>" value="0"></input>px
+                        右下[x]/[y]: <input id="x_r_b<%=i-1%>" class="input_point" name="name_x_r_b<%=i-1%>" value="0"></input>px/
+                                    <input id="y_r_b<%=i-1%>" class="input_point"  name="name_y_r_b<%=i-1%>" value="0"></input>px</p>
+                            <!--タイトル1: <input type="text" name="title" class="input" required><br>-->
+                    <button type="submit" class="submit_point" name="button<%=i-1%>" > 座標入力 </button>
                     クリック回数:<span id="click_counter_id<%=i-1%>" style="margin-left: 10px;">0</span>
                     <button id="reset_button<%=i-1%>" class="button_reset" name="reset_button">座標リセット</button>
-                </td>
-                <td colspan="2">
-                    <button type="submit" class="submit_point" name="button<%=i-1%>" > aaa </button>
-                    クリック回数:<span id="click_counter_id<%=i%>" style="margin-left: 10px;">0</span>
-                    <p>左上[x]/[y]: <input id="x_l_t<%=i%>" class="input_point"></input>px/<input id="y_l_t<%=i%>" class="input_point"></input>px
-                       右上[x]/[y]: <input id="x_r_t<%=i%>" class="input_point"></input>px/<input id="y_r_t<%=i%>" class="input_point"></input>px<br>
-                       左中[x]/[y]: <input id="x_l_m<%=i%>" class="input_point"></input>px/<input id="y_l_m<%=i%>" class="input_point"></input>px
-                       右中[x]/[y]: <input id="x_r_m<%=i%>" class="input_point"></input>px/<input id="y_r_m<%=i%>" class="input_point"></input>px<br>
-                       左下[x]/[y]: <input id="x_l_b<%=i%>" class="input_point"></input>px/<input id="y_l_b<%=i%>" class="input_point"></input>px
-                       右下[x]/[y]: <input id="x_r_b<%=i%>" class="input_point"></input>px/<input id="y_r_b<%=i%>" class="input_point"></input>px</p>
-                </td>
-            </tr>
-            <tr>
-        <% } %>
-            <% }); %>
-            </tr>
+                    </td>
+                    <td colspan="2">
+                        <p>左上[x]/[y]: <input id="x_l_t<%=i%>" class="input_point" name="name_x_l_t<%=i%>" value="0"></input>px/
+                            <input id="y_l_t<%=i%>" class="input_point"  name="name_y_l_t<%=i%>" value="0"></input>px
+                            右上[x]/[y]: <input id="x_r_t<%=i%>" class="input_point" name="name_x_r_t<%=i%>" value="0"></input>px/
+                            <input id="y_r_t<%=i%>" class="input_point"  name="name_y_r_t<%=i%>" value="0"></input>px<br>
+                            左中[x]/[y]: <input id="x_l_m<%=i%>" class="input_point" name="name_x_l_m<%=i%>" value="0"></input>px/
+                            <input id="y_l_m<%=i%>" class="input_point"  name="name_y_l_m<%=i%>" value="0"></input>px
+                            右中[x]/[y]: <input id="x_r_m<%=i%>" class="input_point" name="name_x_r_m<%=i%>" value="0"></input>px/
+                            <input id="y_r_m<%=i%>" class="input_point"  name="name_y_r_m<%=i%>" value="0"></input>px<br>
+                            左下[x]/[y]: <input id="x_l_b<%=i%>" class="input_point" name="name_x_l_b<%=i%>" value="0"></input>px/
+                            <input id="y_l_b<%=i%>" class="input_point"  name="name_y_l_b<%=i%>" value="0"></input>px
+                            右下[x]/[y]: <input id="x_r_b<%=i%>" class="input_point" name="name_x_r_b<%=i%>" value="0"></input>px/
+                            <input id="y_r_b<%=i%>" class="input_point"  name="name_y_r_b<%=i%>" value="0"></input>px</p>
+                        <button type="submit" class="submit_point" name="button<%=i%>" > 座標入力 </button>
+                        クリック回数:<span id="click_counter_id<%=i%>" style="margin-left: 10px;">0</span>
+                        <button id="reset_button<%=i%>" class="button_reset" name="reset_button">座標リセット</button>
+                    </td>
+                </tr>
+                <tr>
+            <% } %>
+                <% }); %>
+                </tr>
         </table>
+        <button type="submit" class="submit_point" name="sendsql" > 座標入力 </button>
+    </form>
+
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 
     <script type="text/javascript">
         $("button[name='reset_button']").on('click', function(e){
             alert("reset");
+            var id_name = $(this).attr('id');
+            var id = id_name.replace("reset_button","");
+            var point_arr = ["x_l_t","y_l_t","x_r_t","y_r_t","x_l_m","y_l_m","x_r_m","y_r_m","x_l_b","y_l_b","x_r_b","y_r_b"];
+            for (var i = 0; i < point_arr.length; i++){
+                document.getElementById(point_arr[i] + id).value = 0;
+            }
+            document.getElementById("click_counter_id" + id).innerHTML = 0;
+            if (id ==1){
+                $count1 = 0;
+            }else if(id ==2){
+                $count2 = 0;
+            }else if(id ==3){
+                $count3 = 0;
+            }else if(id ==4){
+                $count4 = 0;
+            }
         });
 
         var $count1 = 0;
