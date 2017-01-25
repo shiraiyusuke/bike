@@ -6,12 +6,28 @@ var connection = require('../mysqlConnection'); // 追加
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    var query = 'SELECT * FROM bike_result WHERE processed =0 LIMIT 4';
-    connection.query(query, function(err, rows) {
-        res.render('index', {
-            title: 'バイク正解データ収集', /* ここでindex.ejsに渡す値をセット*/
-            imageList: rows
+    // 画面表示用画像取得SQL
+    var query1 = 'SELECT * FROM bike_result WHERE processed =0 and get_from ="goonet" and shashu="sr400" and direction = "right" LIMIT 4';
+
+    // 排他制御用SQL(処理中のレコードはprocessed=2をセット)
+    var createdAt = moment().format('YYYY-MM-DD HH:mm:ss');
+    var query2 = 'UPDATE bike_result SET processed = 2, update_at ="' + createdAt + '"'
+        + ' WHERE processed =0 and get_from ="goonet" and shashu="sr400" and direction = "right" LIMIT 4';
+
+    // processed=2を永遠に残さない対応(processed=0へ)
+    var query3 = 'UPDATE bike_result SET processed = 0 WHERE processed =2 and unix_timestamp(now()) - unix_timestamp(update_at) > 600';
+
+    connection.query(query1, function(err, rows) {
+            res.render('index', {
+                title: 'バイク正解データ収集', /* ここでindex.ejsに渡す値をセット*/
+                imageList: rows
+            });
         });
+    connection.query(query2, function(err, rows) {
+        console.log(err)
+    });
+    connection.query(query3, function(err, rows) {
+        console.log(err)
     });
 });
 
