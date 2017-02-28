@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+<div class="wrapper">
+    <h2>バイクフロントフォーク座標入力[フロント]</h2>
+    <form action="/front" method="post" class="board-form" id="target1" style="display: inline">
+
+        <table border="1" cellspacing="1">
+            <tr>
+                <% var i =0 %>
+                <% imageList.forEach(function(imageItem) { %>
+                    <% i += 1;%>
+                <td>    <input id="label_id<%=i%>" name="table_img_id<%=i%>" value="<%= imageItem.image_id %>" size="4"></input></td>
+                <td>    <img id ="img_id<%=i%>" name="img_file" src=<%= imageItem.image_path %>>   </td>
+            <% if(i % 2 == 0){ %>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <p class="front_left">[左側]左上: <input id="l_x_l_t<%=i-1%>" class="input_point" name="name_l_x_l_t<%=i-1%>" value="0"></input>px/
+                                   <input id="l_y_l_t<%=i-1%>" class="input_point"  name="name_l_y_l_t<%=i-1%>" value="0"></input>px
+                        [左側]右上: <input id="l_x_r_t<%=i-1%>" class="input_point" name="name_l_x_r_t<%=i-1%>" value="0"></input>px/
+                                    <input id="l_y_r_t<%=i-1%>" class="input_point"  name="name_l_y_r_t<%=i-1%>" value="0"></input>px<br>
+                        [左側]左中: <input id="l_x_l_m<%=i-1%>" class="input_point" name="name_l_x_l_m<%=i-1%>" value="0"></input>px/
+                                    <input id="l_y_l_m<%=i-1%>" class="input_point"  name="name_l_y_l_m<%=i-1%>" value="0"></input>px
+                        [左側]右中: <input id="l_x_r_m<%=i-1%>" class="input_point" name="name_l_x_r_m<%=i-1%>" value="0"></input>px/
+                                    <input id="l_y_r_m<%=i-1%>" class="input_point"  name="name_l_y_r_m<%=i-1%>" value="0"></input>px<br>
+                        [左側]左下: <input id="l_x_l_b<%=i-1%>" class="input_point" name="name_l_x_l_b<%=i-1%>" value="0"></input>px/
+                                    <input id="l_y_l_b<%=i-1%>" class="input_point"  name="name_l_y_l_b<%=i-1%>" value="0"></input>px
+                        [左側]右下: <input id="l_x_r_b<%=i-1%>" class="input_point" name="name_l_x_r_b<%=i-1%>" value="0"></input>px/
+                                    <input id="l_y_r_b<%=i-1%>" class="input_point"  name="name_l_y_r_b<%=i-1%>" value="0"></input>px</p>
+                    <p class="front_right">[右側]左上: <input id="r_x_l_t<%=i-1%>" class="input_point" name="name_r_x_l_t<%=i-1%>" value="0"></input>px/
+                                   <input id="r_y_l_t<%=i-1%>" class="input_point"  name="name_r_y_l_t<%=i-1%>" value="0"></input>px
+                        [右側]右上: <input id="r_x_r_t<%=i-1%>" class="input_point" name="name_r_x_r_t<%=i-1%>" value="0"></input>px/
+                                    <input id="r_y_r_t<%=i-1%>" class="input_point"  name="name_r_y_r_t<%=i-1%>" value="0"></input>px<br>
+                        [右側]左中: <input id="r_x_l_m<%=i-1%>" class="input_point" name="name_r_x_l_m<%=i-1%>" value="0"></input>px/
+                                    <input id="r_y_l_m<%=i-1%>" class="input_point"  name="name_r_y_l_m<%=i-1%>" value="0"></input>px
+                        [右側]右中: <input id="r_x_r_m<%=i-1%>" class="input_point" name="name_r_x_r_m<%=i-1%>" value="0"></input>px/
+                                    <input id="r_y_r_m<%=i-1%>" class="input_point"  name="name_r_y_r_m<%=i-1%>" value="0"></input>px<br>
+                        [右側]左下: <input id="r_x_l_b<%=i-1%>" class="input_point" name="name_r_x_l_b<%=i-1%>" value="0"></input>px/
+                                    <input id="r_y_l_b<%=i-1%>" class="input_point"  name="name_r_y_l_b<%=i-1%>" value="0"></input>px
+                        [右側]右下: <input id="r_x_r_b<%=i-1%>" class="input_point" name="name_r_x_r_b<%=i-1%>" value="0"></input>px/
+                                    <input id="r_y_r_b<%=i-1%>" class="input_point"  name="name_r_y_r_b<%=i-1%>" value="0"></input>px</p>
+                     <!--タイトル1: <input type="text" name="title" class="input" required><br>-->
+                    クリック回数:<span id="click_counter_id<%=i-1%>" style="margin-left: 10px;">0</span>
+                    <button type="button" id="reset_button<%=i-1%>" class="button_reset" name="reset_button">座標リセット</button>
+                    <button type="button" id="giveup_button<%=i-1%>" class="button_reset" name="giveup_button">座標不明</button>
+                </td>
+                    <td colspan="2">
+                        <p class="front_left">[左側]左上: <input id="l_x_l_t<%=i%>" class="input_point" name="name_l_x_l_t<%=i%>" value="0"></input>px/
+                                        <input id="l_y_l_t<%=i%>" class="input_point"  name="name_l_y_l_t<%=i%>" value="0"></input>px
+                            [左側]右上: <input id="l_x_r_t<%=i%>" class="input_point" name="name_l_x_r_t<%=i%>" value="0"></input>px/
+                                        <input id="l_y_r_t<%=i%>" class="input_point"  name="name_l_y_r_t<%=i%>" value="0"></input>px<br>
+                            [左側]左中: <input id="l_x_l_m<%=i%>" class="input_point" name="name_l_x_l_m<%=i%>" value="0"></input>px/
+                                        <input id="l_y_l_m<%=i%>" class="input_point"  name="name_l_y_l_m<%=i%>" value="0"></input>px
+                            [左側]右中: <input id="l_x_r_m<%=i%>" class="input_point" name="name_l_x_r_m<%=i%>" value="0"></input>px/
+                                        <input id="l_y_r_m<%=i%>" class="input_point"  name="name_l_y_r_m<%=i%>" value="0"></input>px<br>
+                            [左側]左下: <input id="l_x_l_b<%=i%>" class="input_point" name="name_l_x_l_b<%=i%>" value="0"></input>px/
+                                        <input id="l_y_l_b<%=i%>" class="input_point"  name="name_l_y_l_b<%=i%>" value="0"></input>px
+                            [左側]右下: <input id="l_x_r_b<%=i%>" class="input_point" name="name_l_x_r_b<%=i%>" value="0"></input>px/
+                                        <input id="l_y_r_b<%=i%>" class="input_point"  name="name_l_y_r_b<%=i%>" value="0"></input>px</p>
+                        <p class="front_right">[右側]左上: <input id="r_x_l_t<%=i%>" class="input_point" name="name_r_x_l_t<%=i%>" value="0"></input>px/
+                                        <input id="r_y_l_t<%=i%>" class="input_point"  name="name_r_y_l_t<%=i%>" value="0"></input>px
+                            [右側]右上: <input id="r_x_r_t<%=i%>" class="input_point" name="name_r_x_r_t<%=i%>" value="0"></input>px/
+                                        <input id="r_y_r_t<%=i%>" class="input_point"  name="name_r_y_r_t<%=i%>" value="0"></input>px<br>
+                            [右側]左中: <input id="r_x_l_m<%=i%>" class="input_point" name="name_r_x_l_m<%=i%>" value="0"></input>px/
+                                        <input id="r_y_l_m<%=i%>" class="input_point"  name="name_r_y_l_m<%=i%>" value="0"></input>px
+                            [右側]右中: <input id="r_x_r_m<%=i%>" class="input_point" name="name_r_x_r_m<%=i%>" value="0"></input>px/
+                                        <input id="r_y_r_m<%=i%>" class="input_point"  name="name_r_y_r_m<%=i%>" value="0"></input>px<br>
+                            [右側]左下: <input id="r_x_l_b<%=i%>" class="input_point" name="name_r_x_l_b<%=i%>" value="0"></input>px/
+                                        <input id="r_y_l_b<%=i%>" class="input_point"  name="name_r_y_l_b<%=i%>" value="0"></input>px
+                            [右側]右下: <input id="r_x_r_b<%=i%>" class="input_point" name="name_r_x_r_b<%=i%>" value="0"></input>px/
+                                        <input id="r_y_r_b<%=i%>" class="input_point"  name="name_r_y_r_b<%=i%>" value="0"></input>px</p>
+                        クリック回数:<span id="click_counter_id<%=i%>" style="margin-left: 10px;">0</span>
+                        <button type="button" id="reset_button<%=i%>" class="button_reset" name="reset_button">座標リセット</button>
+                        <button type="button" id="giveup_button<%=i%>" class="button_reset" name="giveup_button">座標不明</button>
+                    </td>
+                </tr>
+                <tr>
+            <% } %>
+                <% }); %>
+                </tr>
+        </table>
+        <button type="submit" class="submit_point" name="sendsql" > 座標入力 </button>
+    </form>
+
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+    <script type="text/javascript">
+        $("button[name='reset_button']").on('click', function(e){
+            var id_name = $(this).attr('id');
+            var id = id_name.replace("reset_button","");
+            var point_arr = ["l_x_l_t","l_y_l_t","l_x_r_t","l_y_r_t","l_x_l_m","l_y_l_m","l_x_r_m","l_y_r_m","l_x_l_b","l_y_l_b","l_x_r_b","l_y_r_b",
+                "r_x_l_t","r_y_l_t","r_x_r_t","r_y_r_t","r_x_l_m","r_y_l_m","r_x_r_m","r_y_r_m","r_x_l_b","r_y_l_b","r_x_r_b","r_y_r_b"];
+            for (var i = 0; i < point_arr.length; i++){
+                document.getElementById(point_arr[i] + id).value = 0;
+            }
+            document.getElementById("click_counter_id" + id).innerHTML = 0;
+            if (id ==1){
+                $count1 = 0;
+            }else if(id ==2){
+                $count2 = 0;
+            }else if(id ==3){
+                $count3 = 0;
+            }else if(id ==4){
+                $count4 = 0;
+            }
+        });
+        $("button[name='giveup_button']").on('click', function(e){
+            var id_name = $(this).attr('id');
+            var id = id_name.replace("giveup_button","");
+            var point_arr = ["l_x_l_t","l_y_l_t","l_x_r_t","l_y_r_t","l_x_l_m","l_y_l_m","l_x_r_m","l_y_r_m","l_x_l_b","l_y_l_b","l_x_r_b","l_y_r_b",
+                             "r_x_l_t","r_y_l_t","r_x_r_t","r_y_r_t","r_x_l_m","r_y_l_m","r_x_r_m","r_y_r_m","r_x_l_b","r_y_l_b","r_x_r_b","r_y_r_b"];
+            for (var i = 0; i < point_arr.length; i++){
+                document.getElementById(point_arr[i] + id).value = 99;
+            }
+            document.getElementById("click_counter_id" + id).innerHTML = 0;
+            if (id ==1){
+                $count1 = 0;
+            }else if(id ==2){
+                $count2 = 0;
+            }else if(id ==3){
+                $count3 = 0;
+            }else if(id ==4){
+                $count4 = 0;
+            }
+        });
+
+        var $count1 = 0;
+        var $count2 = 0;
+        var $count3 = 0;
+        var $count4 = 0;
+
+        $("img[name='img_file']").on('click', function(e){
+        //function get_point(){
+            // 動作を停止
+            e.preventDefault();
+
+            var img_id = e.toElement.id;
+            var element = document.getElementById(img_id) ;
+
+            // マウス位置を取得する
+            var mouseX = e.pageX;	// X座標
+            var mouseY = e.pageY;	// Y座標
+
+            // 要素の位置を取得
+            var element = document.getElementById(img_id);
+            var rect = element.getBoundingClientRect();
+            // 要素の位置座標を計算
+            var positionX = rect.left + window.pageXOffset;	// 要素のX座標
+            var positionY = rect.top + window.pageYOffset;	// 要素のY座標
+            // 要素の左上からの距離を計算
+            var offsetX = mouseX - positionX;
+            var offsetY = mouseY - positionY;
+
+            // idの数値取得
+            var target_num = img_id.split("id")[1];
+            var click_cnt = eval(document.getElementById("click_counter_id" + target_num).outerText);
+
+            if (img_id=="img_id1"){
+                countUp1();
+                if(click_cnt ==0) {
+                    var xluElement = document.getElementById("l_x_l_t1");
+                    var yluElement = document.getElementById("l_y_l_t1");
+                    xluElement.value = Math.floor(offsetX);
+                    yluElement.value = Math.floor(offsetY);
+                }else if(click_cnt==1){
+                    var xruElement = document.getElementById("l_x_r_t1");
+                    var yruElement = document.getElementById("l_y_r_t1");
+                    xruElement.value = Math.floor(offsetX);
+                    yruElement.value = Math.floor(offsetY);
+                }else if(click_cnt==2){
+                    var xlmElement = document.getElementById("l_x_l_m1");
+                    var ylmElement = document.getElementById("l_y_l_m1");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                }else if(click_cnt==3){
+                    var xlmElement = document.getElementById("l_x_r_m1");
+                    var ylmElement = document.getElementById("l_y_r_m1");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                }else if(click_cnt==4){
+                    var xlmElement = document.getElementById("l_x_l_b1");
+                    var ylmElement = document.getElementById("l_y_l_b1");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                }else if(click_cnt==5){
+                    var xlmElement = document.getElementById("l_x_r_b1");
+                    var ylmElement = document.getElementById("l_y_r_b1");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                }else if(click_cnt==6){
+                    var xruElement = document.getElementById("r_x_l_t1");
+                    var yruElement = document.getElementById("r_y_l_t1");
+                    xruElement.value = Math.floor(offsetX);
+                    yruElement.value = Math.floor(offsetY);
+                }else if(click_cnt==7){
+                    var xlmElement = document.getElementById("r_x_r_t1");
+                    var ylmElement = document.getElementById("r_y_r_t1");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                }else if(click_cnt==8){
+                    var xlmElement = document.getElementById("r_x_l_m1");
+                    var ylmElement = document.getElementById("r_y_l_m1");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                }else if(click_cnt==9){
+                    var xlmElement = document.getElementById("r_x_r_m1");
+                    var ylmElement = document.getElementById("r_y_r_m1");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                }else if(click_cnt==10){
+                    var xlmElement = document.getElementById("r_x_l_b1");
+                    var ylmElement = document.getElementById("r_y_l_b1");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                }else if(click_cnt==11){
+                    var xlmElement = document.getElementById("r_x_r_b1");
+                    var ylmElement = document.getElementById("r_y_r_b1");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                }
+            }else if (img_id=="img_id2") {
+                countUp2();
+                if (click_cnt == 0) {
+                    var xluElement = document.getElementById("l_x_l_t2");
+                    var yluElement = document.getElementById("l_y_l_t2");
+                    xluElement.value = Math.floor(offsetX);
+                    yluElement.value = Math.floor(offsetY);
+                } else if (click_cnt == 1) {
+                    var xruElement = document.getElementById("l_x_r_t2");
+                    var yruElement = document.getElementById("l_y_r_t2");
+                    xruElement.value = Math.floor(offsetX);
+                    yruElement.value = Math.floor(offsetY);
+                } else if (click_cnt == 2) {
+                    var xlmElement = document.getElementById("l_x_l_m2");
+                    var ylmElement = document.getElementById("l_y_l_m2");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                } else if (click_cnt == 3) {
+                    var xlmElement = document.getElementById("l_x_r_m2");
+                    var ylmElement = document.getElementById("l_y_r_m2");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                } else if (click_cnt == 4) {
+                    var xlmElement = document.getElementById("l_x_l_b2");
+                    var ylmElement = document.getElementById("l_y_l_b2");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                } else if (click_cnt == 5) {
+                    var xlmElement = document.getElementById("l_x_r_b2");
+                    var ylmElement = document.getElementById("l_y_r_b2");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                } else if (click_cnt == 6){
+                    var xruElement = document.getElementById("r_x_l_t2");
+                    var yruElement = document.getElementById("r_y_l_t2");
+                    xruElement.value = Math.floor(offsetX);
+                    yruElement.value = Math.floor(offsetY);
+                }else if(click_cnt == 7){
+                    var xlmElement = document.getElementById("r_x_r_t2");
+                    var ylmElement = document.getElementById("r_y_r_t2");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                }else if(click_cnt == 8){
+                    var xlmElement = document.getElementById("r_x_l_m2");
+                    var ylmElement = document.getElementById("r_y_l_m2");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                }else if(click_cnt == 9){
+                    var xlmElement = document.getElementById("r_x_r_m2");
+                    var ylmElement = document.getElementById("r_y_r_m2");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                }else if(click_cnt == 10){
+                    var xlmElement = document.getElementById("r_x_l_b2");
+                    var ylmElement = document.getElementById("r_y_l_b2");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                }else if(click_cnt == 11){
+                    var xlmElement = document.getElementById("r_x_r_b2");
+                    var ylmElement = document.getElementById("r_y_r_b2");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                }
+            }else if (img_id=="img_id3") {
+                countUp3();
+                if (click_cnt == 0) {
+                    var xluElement = document.getElementById("l_x_l_t3");
+                    var yluElement = document.getElementById("l_y_l_t3");
+                    xluElement.value = Math.floor(offsetX);
+                    yluElement.value = Math.floor(offsetY);
+                } else if (click_cnt == 1) {
+                    var xruElement = document.getElementById("l_x_r_t3");
+                    var yruElement = document.getElementById("l_y_r_t3");
+                    xruElement.value = Math.floor(offsetX);
+                    yruElement.value = Math.floor(offsetY);
+                } else if (click_cnt == 2) {
+                    var xlmElement = document.getElementById("l_x_l_m3");
+                    var ylmElement = document.getElementById("l_y_l_m3");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                } else if (click_cnt == 3) {
+                    var xlmElement = document.getElementById("l_x_r_m3");
+                    var ylmElement = document.getElementById("l_y_r_m3");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                } else if (click_cnt == 4) {
+                    var xlmElement = document.getElementById("l_x_l_b3");
+                    var ylmElement = document.getElementById("l_y_l_b3");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                } else if (click_cnt == 5) {
+                    var xlmElement = document.getElementById("l_x_r_b3");
+                    var ylmElement = document.getElementById("l_y_r_b3");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                }else if (click_cnt == 6){
+                    var xruElement = document.getElementById("r_x_l_t3");
+                    var yruElement = document.getElementById("r_y_l_t3");
+                    xruElement.value = Math.floor(offsetX);
+                    yruElement.value = Math.floor(offsetY);
+                }else if(click_cnt == 7){
+                    var xlmElement = document.getElementById("r_x_r_t3");
+                    var ylmElement = document.getElementById("r_y_r_t3");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                }else if(click_cnt == 8){
+                    var xlmElement = document.getElementById("r_x_l_m3");
+                    var ylmElement = document.getElementById("r_y_l_m3");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                }else if(click_cnt == 9){
+                    var xlmElement = document.getElementById("r_x_r_m3");
+                    var ylmElement = document.getElementById("r_y_r_m3");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                }else if(click_cnt == 10){
+                    var xlmElement = document.getElementById("r_x_l_b3");
+                    var ylmElement = document.getElementById("r_y_l_b3");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                }else if(click_cnt == 11){
+                    var xlmElement = document.getElementById("r_x_r_b3");
+                    var ylmElement = document.getElementById("r_y_r_b3");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                }
+            }else if (img_id=="img_id4") {
+                countUp4();
+                if (click_cnt == 0) {
+                    var xluElement = document.getElementById("l_x_l_t4");
+                    var yluElement = document.getElementById("l_y_l_t4");
+                    xluElement.value = Math.floor(offsetX);
+                    yluElement.value = Math.floor(offsetY);
+                } else if (click_cnt == 1) {
+                    var xruElement = document.getElementById("l_x_r_t4");
+                    var yruElement = document.getElementById("l_y_r_t4");
+                    xruElement.value = Math.floor(offsetX);
+                    yruElement.value = Math.floor(offsetY);
+                } else if (click_cnt == 2) {
+                    var xlmElement = document.getElementById("l_x_l_m4");
+                    var ylmElement = document.getElementById("l_y_l_m4");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                } else if (click_cnt == 3) {
+                    var xlmElement = document.getElementById("l_x_r_m4");
+                    var ylmElement = document.getElementById("l_y_r_m4");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                } else if (click_cnt == 4) {
+                    var xlmElement = document.getElementById("l_x_l_b4");
+                    var ylmElement = document.getElementById("l_y_l_b4");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                } else if (click_cnt == 5) {
+                    var xlmElement = document.getElementById("l_x_r_b4");
+                    var ylmElement = document.getElementById("l_y_r_b4");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                }else if (click_cnt == 6){
+                    var xruElement = document.getElementById("r_x_l_t4");
+                    var yruElement = document.getElementById("r_y_l_t4");
+                    xruElement.value = Math.floor(offsetX);
+                    yruElement.value = Math.floor(offsetY);
+                }else if(click_cnt == 7){
+                    var xlmElement = document.getElementById("r_x_r_t4");
+                    var ylmElement = document.getElementById("r_y_r_t4");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                }else if(click_cnt == 8){
+                    var xlmElement = document.getElementById("r_x_l_m4");
+                    var ylmElement = document.getElementById("r_y_l_m4");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                }else if(click_cnt == 9){
+                    var xlmElement = document.getElementById("r_x_r_m4");
+                    var ylmElement = document.getElementById("r_y_r_m4");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                }else if(click_cnt == 10){
+                    var xlmElement = document.getElementById("r_x_l_b4");
+                    var ylmElement = document.getElementById("r_y_l_b4");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                }else if(click_cnt == 11){
+                    var xlmElement = document.getElementById("r_x_r_b4");
+                    var ylmElement = document.getElementById("r_y_r_b4");
+                    xlmElement.value = Math.floor(offsetX);
+                    ylmElement.value = Math.floor(offsetY);
+                }
+            }
+
+            function countUp1() {
+                document.getElementById("click_counter_id1").innerHTML = ++$count1;
+            }
+            function countUp2() {
+                document.getElementById("click_counter_id2").innerHTML = ++$count2;
+            }
+            function countUp3() {
+                document.getElementById("click_counter_id3").innerHTML = ++$count3;
+            }
+            function countUp4() {
+                document.getElementById("click_counter_id4").innerHTML = ++$count4;
+            }
+        });
+
+    </script>
+</div>
+</body>
+</html>
