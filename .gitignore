@@ -2,3 +2,8 @@
 *.png
 *.zip
 *.lst
+*.h5
+*.json
+*.caffemodel
+*.solverstate
+*.mdb
