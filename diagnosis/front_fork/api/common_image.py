@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+画像の共通処理
+"""
 import os
 import cv2
 import matplotlib.pyplot as plt

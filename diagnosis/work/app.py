@@ -1,8 +1,9 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
+import numpy as np
+import scipy as sc
+import pandas as pd
 import os
 import sys
-import numpy as np
-import pandas as pd
 
 
 def function():
