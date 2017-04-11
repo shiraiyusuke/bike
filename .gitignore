@@ -2,3 +2,5 @@
 *.png
 *.zip
 *.lst
+*.json
+*.h5
