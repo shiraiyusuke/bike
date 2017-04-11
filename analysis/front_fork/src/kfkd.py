@@ -14,10 +14,17 @@ from keras.utils.visualize_util import plot
 from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import LearningRateScheduler
 
+from keras.models import Sequential
+from keras.layers.core import Dense, Dropout, Activation, Flatten
+from keras.layers.convolutional import Convolution2D, MaxPooling2D
+from keras.layers.normalization import BatchNormalization
+from keras.regularizers import l2
+
+
 import matplotlib.pyplot as plt
 
 FTRAIN = '../data/bike_training.csv'
-FTEST = '../data/bike_test.csv'
+FTEST = '../data/bike_test_ng.csv'
 
 
 def make_conv_model():
@@ -103,6 +110,7 @@ def drew_sample(model1, model2):
     # sampleの[1:2]を変えるとサンプルが変化
     for i in range(42):
         sample1 = load2d(test=True)[0][i:i+1]
+        print sample1
         sample2 = load2d(test=True)[0][i:i+1]
         y_pred1 = model1.predict(sample1)[0]
         y_pred2 = model2.predict(sample2)[0]
@@ -160,6 +168,7 @@ def data_augmentation():
 def plot_sample(x, y, axis):
     img = x.reshape(300, 400)
     axis.imshow(img, cmap='gray')
+    print y[0::2] * 48 + 48, y[1::2] * 48 + 48
     axis.scatter(y[0::2] * 48 + 48, y[1::2] * 48 + 48, marker='x', s=10)
 
 
@@ -206,7 +215,7 @@ def make_simple_model(model_architecture='', model_weight=''):
 
     for i in range(16):
         axis = fig.add_subplot(4, 4, i+1, xticks=[], yticks=[])
-        print(y_test[i])
+        # print(y_test[i])
         plot_sample(X_test[i], y_test[i], axis)
 
     plt.show()
@@ -222,10 +231,10 @@ def load(test=False, cols=None):
     if cols:
         df = df[list(cols) + ['Image']]
 
-    print(df.count())
     df = df.dropna()
 
     X = np.vstack(df['Image'].values) / 255. # 0〜1の値に変換
+
     X = X.astype(np.float32)
 
     if not test:
@@ -257,14 +266,14 @@ if __name__ == '__main__':
     # make_simple_model(model1_architecture, model1_weight)
     # make_simple_model()
 
-    conv_model1_architecture = '../model/bike_conv_model_architecture_arg_8.json'
-    conv_model1_weight = '../model/bike_conv_model_weights_arg_8.h5'
+    conv_model1_architecture = '../model/all/bike_conv_model_architecture_arg_8.json'
+    conv_model1_weight = '../model/all/bike_conv_model_weights_arg_8.h5'
 
-    conv_model2_architecture = '../model/bike_conv_model_architecture_arg.json'
-    conv_model2_weight = '../model/bike_conv_model_weights_arg.h5'
+    conv_model2_architecture = '../model/all/bike_conv_model_architecture_arg.json'
+    conv_model2_weight = '../model/all/bike_conv_model_weights_arg.h5'
 
     # make_conv_model()
-    make_conv_model3()
+    # make_conv_model3()
 
     # モデルの読み込み
     model1 = model_from_json(open(conv_model1_architecture).read())
