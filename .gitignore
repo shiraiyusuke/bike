@@ -4,3 +4,7 @@
 *.lst
 *.json
 *.h5
+*.json
+*.caffemodel
+*.solverstate
+*.mdb

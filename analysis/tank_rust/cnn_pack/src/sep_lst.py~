@@ -1,0 +1,6 @@
+import numpy as np
+import sys
+
+
+input_file = sys.argv[1]
+test_ratio = float(sys.argv[2])
