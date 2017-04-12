@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+画像の共通処理
+"""
 import os
 import cv2
 import matplotlib.pyplot as plt
@@ -11,6 +14,20 @@ def resize_image(image, size_tuple):
     """
     resize_img = cv2.resize(image, size_tuple)
     return resize_img
+
+def resize_coordinate(coordinate_tuple, size_tuple):
+    """座標情報を指定したスケールで修正
+    :param coordinate_tuple:
+    :param size_tuple:
+    :return:
+    """
+    x = coordinate_tuple[0]
+    y = coordinate_tuple[1]
+    w_rate = size_tuple[0]
+    h_rate = size_tuple[1]
+    x = float(x) * w_rate
+    y = float(y) * h_rate
+    return (x, y)
 
 def save_image(image, save_name):
     """
@@ -32,3 +49,19 @@ def image_show(image):
     cv2.imshow('test', image)
     cv2.waitKey(0)             # キーウェイト無制限
     cv2.destroyAllWindows()    # 作成したウインドウの破棄
+
+def del_dsstore(inlist):
+    inlist.remove('.DS_Store')
+    return inlist
+
+def make_training_data_from_gray_image(coordinate_list, gray_image, out_training_csv, save_gray_image_name):
+    with open(out_training_csv, 'a') as out_f:
+        out_list =[]
+        # out_list.append(save_gray_image_name)
+        for i in range(len(coordinate_list)):
+            out_list.append(coordinate_list[i][0])
+            out_list.append(coordinate_list[i][1])
+        flat = gray_image.ravel()
+        flat_list = flat.tolist()
+
+        out_f.write(','.join(map(str, out_list)) + ',' + ' '.join(map(str,flat_list)) + '\n')
