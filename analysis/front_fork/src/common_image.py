@@ -51,7 +51,8 @@ def image_show(image):
     cv2.destroyAllWindows()    # 作成したウインドウの破棄
 
 def del_dsstore(inlist):
-    inlist.remove('.DS_Store')
+    if '.DS_Store' in inlist:
+        inlist.remove('.DS_Store')
     return inlist
 
 def make_training_data_from_gray_image(coordinate_list, gray_image, out_training_csv, save_gray_image_name):
@@ -65,7 +66,7 @@ def make_training_data_from_gray_image(coordinate_list, gray_image, out_training
     """
     with open(out_training_csv, 'a') as out_f:
         out_list =[]
-        # out_list.append(save_gray_image_name)
+        out_list.append(save_gray_image_name)
         for i in range(len(coordinate_list)):
             out_list.append(coordinate_list[i][0])
             out_list.append(coordinate_list[i][1])
