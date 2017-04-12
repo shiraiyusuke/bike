@@ -55,6 +55,14 @@ def del_dsstore(inlist):
     return inlist
 
 def make_training_data_from_gray_image(coordinate_list, gray_image, out_training_csv, save_gray_image_name):
+    """
+    以下を利用して、学習用のcsvを作成する。
+    :param coordinate_list: 座標情報のリスト(中身はxとy座標のタプル)
+    :param gray_image: grayscaleのイメージのnp.arrayデータ
+    :param out_training_csv: 出力ファイル
+    :param save_gray_image_name: グレースケール画像の保存先ディレクトリ
+    :return: None
+    """
     with open(out_training_csv, 'a') as out_f:
         out_list =[]
         # out_list.append(save_gray_image_name)
