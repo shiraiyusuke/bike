@@ -1,25 +1,19 @@
 # -*- coding: utf-8 -*-
 """
 DBの座標のダンプファイルを用い、リサイズ、座標調整、グレースケースケール画像保存、学習用ファイルを生成する。
-target_dbfile：MYSQLのDBダンプ
-out_dir：リサイズ後のカラーイメージ保存ディレクトリ
-out_dir_gray：リサイズ後のグレースケールイメージ保存ディレクトリ
-insize_tuple：inputの画像のサイズ
-resize_tuple：リサイズするサイズ
-adjust_rate：リサイズする割合
 """
-import os
 import common_image
 import cv2
+import os
 
-def resize_adjust_coordinate(target_dbfile, target_image_dir, out_dir, out_dir_gray, insize_tuple, resize_tuple, adjust_rate, out_training_csv):
+def resize_adjust_coordinate(db_result, target_image_dir, out_dir_resize, out_dir_gray, insize_tuple, resize_tuple, adjust_rate, out_training_csv):
     with open(out_training_csv, 'a') as out_f:
         out_f.write('left_top_x,left_top_y,right_top_x,right_top_y,left_middle_x,left_middle_y,right_middle_x,right_middle_y,left_bottom_x,left_bottom_y,right_bottom_x,right_bottom_y,Image\n')
 
-    with open(target_dbfile, 'r') as dbfile:
+    with open(db_result, 'r') as dbfile:
         for line in dbfile:
             line = line.rstrip()
-            values = line.split(' ')
+            values = line.split('\t')
             id = values[0]          # image_id
             image_path = values[2]  # image_path
             processed = values[3]   # 処理済みフラグ
@@ -62,7 +56,7 @@ def resize_adjust_coordinate(target_dbfile, target_image_dir, out_dir, out_dir_g
                 image = cv2.imread(target_image_dir + image_name)
 
                 resize_image = common_image.resize_image(image, resize_tuple)
-                save_name = out_dir + '/' + image_name
+                save_name = out_dir_resize + '/' + image_name
                 common_image.save_image(resize_image, save_name)
 
                 gray_image = common_image.gray_convert(resize_image)
@@ -76,27 +70,26 @@ def resize_adjust_coordinate(target_dbfile, target_image_dir, out_dir, out_dir_g
 
 
 if __name__ == '__main__':
+    """
+    db_result：MYSQLのDBダンプファイル
+    out_dir_resize：リサイズ後のカラーイメージ保存ディレクトリ
+    out_dir_gray：リサイズ後のグレースケールイメージ保存ディレクトリ
+    insize_tuple：inputの画像のサイズ(width, height)
+    resize_tuple：リサイズするサイズ(width, height)
+    adjust_rate：リサイズする割合(width, height)
+    """
     root_dir = '/usr/local/wk/git_local/bike/'
-    """
-    target_dbfile = root_dir + 'analysis/front_fork/data/from_db/left_bike_coordinate_20170318.tsv'
-    target_image_dir = root_dir + 'analysis/front_fork/data/images/training_image/left_resize/'
-    out_dir = root_dir + 'analysis/front_fork/data/images/training_image/left_resize_150_200/'
-    out_dir_gray = root_dir + 'analysis/front_fork/data/images/training_image/left_resize_150_200_gray/'
+    db_result = root_dir + 'analysis/front_fork/data/from_db/bike_result_20170412_right.tsv'
+    target_image_dir = root_dir + 'analysis/front_fork/data/images/training_image/right_resize/'
+    out_dir_resize = root_dir + 'analysis/front_fork/data/images/training_image/right_resize_150_200/'
+    if not os.path.exists(out_dir_resize):
+        os.mkdir(out_dir_resize)
+    out_dir_gray = root_dir + 'analysis/front_fork/data/images/training_image/right_resize_150_200_gray/'
+    if not os.path.exists(out_dir_gray):
+        os.mkdir(out_dir_gray)
     insize_tuple = (400, 300)
     resize_tuple = (200, 150)
     adjust_rate = (0.5, 0.5)
-    out_training_csv = root_dir + 'analysis/front_fork/data/train/bike_training_150_200.csv'
-    resize_adjust_coordinate(target_dbfile, target_image_dir, out_dir, out_dir_gray,
-                             insize_tuple, resize_tuple, adjust_rate, out_training_csv)
-    """
-
-    target_dbfile = root_dir + 'analysis/front_fork/data/augmentation/bike_random_clop_coordinate.tsv'
-    target_image_dir = root_dir + 'analysis/front_fork/data/augmentation/resize_random_clop_300_400/'
-    out_dir = root_dir + 'analysis/front_fork/data/images/training_image/left_resize_random_clop_150_200/'
-    out_dir_gray = root_dir + 'analysis/front_fork/data/images/training_image/left_resize_random_clop_150_200_gray/'
-    insize_tuple = (400, 300)
-    resize_tuple = (200, 150)
-    adjust_rate = (0.5, 0.5)
-    out_training_csv = root_dir + 'analysis/front_fork/data/train/bike_training_random_clop_150_200.csv'
-    resize_adjust_coordinate(target_dbfile, target_image_dir, out_dir, out_dir_gray,
+    out_training_csv = root_dir + 'analysis/front_fork/data/train/right/bike_training_150_200_conf.csv'
+    resize_adjust_coordinate(db_result, target_image_dir, out_dir_resize, out_dir_gray,
                              insize_tuple, resize_tuple, adjust_rate, out_training_csv)

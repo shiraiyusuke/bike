@@ -14,10 +14,10 @@ def confirm_imshow(img):
     cv2.imshow('window', img)
     cv2.waitKey(0)
 
-def confirm_coordinate(coordinate_file):
+def confirm_coordinate(coordinate_file, split_char):
     with open(coordinate_file, 'r') as in_f:
         for line in in_f:
-            values = line.rstrip().split(',')
+            values = line.rstrip().split(split_char)
             img_path = values[0]
             if img_path == 'left_top_x':
                 continue
@@ -43,9 +43,11 @@ def confirm_coordinate(coordinate_file):
             cv2.circle(img, (point_rmx, point_rmy), 3, (0, 255, 0), -1)
             cv2.circle(img, (point_lbx, point_lby), 3, (0, 255, 0), -1)
             cv2.circle(img, (point_rbx, point_rby), 3, (0, 255, 0), -1)
+            print point_ltx,point_lty,point_rtx,point_rty,point_lmx,point_lmy,point_rmx,point_rmy,point_lbx,point_lby,point_rbx,point_rby
             confirm_imshow(img)
 
 
 if __name__ == '__main__':
-    coordinate_file = '/usr/local/wk/git_local/bike/analysis/front_fork/data/train/bike_training_random_clop_150_200.csv'
-    confirm_coordinate(coordinate_file)
+    coordinate_file = '/usr/local/wk/git_local/bike/analysis/front_fork/data/augmentation/right/resize_random_clop_300_400/right_random_coordinte_all_conf.tsv'
+    split_char = '\t'
+    confirm_coordinate(coordinate_file, split_char)

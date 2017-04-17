@@ -14,7 +14,7 @@ from keras.layers.convolutional import Convolution2D, MaxPooling2D
 import matplotlib.pyplot as plt
 import data_load as dl
 
-FTRAIN = '../data/bike_training.csv'
+FTRAIN = '../data/train/bike_train_all_150_200.csv'
 FTEST = '../data/bike_test_ng.csv'
 
 
@@ -164,8 +164,6 @@ def drew_sample(model1, model2):
     plot_sample(sample2, y_pred2, ax)
     plt.show()
     """
-
-
 
 def drew_accuracy(hist):
     plt.plot(hist.history['loss'], linewidth=3, label='train')
