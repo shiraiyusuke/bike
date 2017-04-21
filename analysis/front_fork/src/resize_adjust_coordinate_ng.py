@@ -5,6 +5,7 @@ DBの座標のダンプファイルを用い、リサイズ、座標調整、グ
 import common_image
 import cv2
 import os
+import argparse
 
 def resize_adjust_coordinate(db_result, target_image_dir, out_dir_resize, out_dir_gray, insize_tuple, resize_tuple, adjust_rate, out_training_csv):
     with open(out_training_csv, 'a') as out_f:
@@ -68,6 +69,31 @@ def resize_adjust_coordinate(db_result, target_image_dir, out_dir_resize, out_di
                 common_image.make_training_data_from_gray_image(coordinate_list, gray_image, out_training_csv, save_gray_image_name)
 
 
+def parse_args(root_dir):
+    parser = argparse.ArgumentParser(description='resize and adjust coordinate')
+
+    parser.add_argument(
+        '--target_image_dir', type=str, dest='target_image_dir', default=None,
+        help=u'リサイズ対象の画像ディレクトリを指定します。例えば、/usr/local/wk/git_local/bike/analysis/front_fork/data/images/training_image/right_resize/')
+    parser.add_argument(
+        '--db_result', type=str, dest='db_result', default=root_dir + 'analysis/front_fork/data/from_db/xxx.tsv',
+        help=u'SQLからダンプした座標ファイルを指定します。')
+    parser.add_argument(
+        '--our_dir_resize', type=str, dest='our_dir_resize', default=root_dir + 'analysis/front_fork/data/images/training_image/right_resize_150_200/',
+        help=u'リサイズ後の画像保存ディレクトリを指定します。')
+    parser.add_argument(
+        '--out_dir_gray', type=str, dest='out_dir_gray', default=None,
+        help=u'リサイズ後のgrayスケール画像保存ディレクトリを指定します。')
+    parser.add_argument(
+        '--insize_tuple', type=str, dest='insize_tuple', default=None,
+        help=u'inputの画像サイズをタプル形式で指定します。(400, 300)など')
+    parser.add_argument(
+        '--resize_tuple', type=str, dest='resize_tuple', default=None,
+        help=u'リサイズするサイズをタプル形式で指定します。(200, 150)など')
+    parser.add_argument(
+        '--adjust_rate', type=str, dest='adjust_rate', default=None,
+        help=u'リサイズする割合をタプル形式で指定します。(0.5, 0.5)')
+    return parser.parse_args()
 
 if __name__ == '__main__':
     """
@@ -79,6 +105,11 @@ if __name__ == '__main__':
     adjust_rate：リサイズする割合(width, height)
     """
     root_dir = '/usr/local/wk/git_local/bike/'
+    args = parse_args(root_dir)
+    insize_tuple = (args.insize_tuple.split(',')[0], args.insize_tuple.split(',')[1])
+    resize_tuple = (args.resize_tuple.split(',')[0], args.resize_tuple.split(',')[1])
+    adjust_rate = (args.adjust_rate.split(',')[0], args.adjust_rate.split(',')[1])
+
     db_result = root_dir + 'analysis/front_fork/data/from_db/bike_result_20170412_right.tsv'
     target_image_dir = root_dir + 'analysis/front_fork/data/images/training_image/right_resize/'
     out_dir_resize = root_dir + 'analysis/front_fork/data/images/training_image/right_resize_150_200/'
