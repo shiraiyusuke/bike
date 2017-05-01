@@ -1,33 +1,57 @@
-import os
+# -*- coding: utf-8 -*-
 import cv2
-import sys
 import os
-import common_image as ci
+import common_image
+import random
+import numpy as np
 
 
-def make_clop_image(target_dir, out_coordinate_file, out_clop_image_dir, out_clop_gray_image_dir):
-    with open(out_coordinate_file, 'r') as coordf:
+def make_negative_file(direction, out_positive_file, out_negative_file, out_negative_image_dir, input_size):
+    with open(out_positive_file, 'r') as posf:
+        for line in posf:
+            values = line.rstrip().split(' ')
+            image_path = values[0]
+            x = values[2]
+            y = values[3]
+            w = values[4]
+            h = values[5]
+            if direction == 'right':
+                w = np.random.normal(100, 15)
+                h = np.random.normal(150, 20)
+                if int(float(x)) - w < 0:
+                    continue
+                for i in range(2): # 1枚につき2枚のnegativeを生成
+                    x_neg = random.randint(0, int(float(x)) - int(w))
+                    y_neg = random.randint(0, int(input_size[1]) - int(h))
+                    image = cv2.imread(image_path)
+                    neg_image = common_image.clop_image(image, x_neg, y_neg, w, h)
+                    save_nega_name = out_negative_image_dir + 'neg_' + str(i) + '_' + image_path.split('/')[-1]
+                    common_image.save_image(neg_image, save_nega_name)
+                    with open(out_negative_file, 'a') as negf:
+                        negf.write(save_nega_name + '\n')
+
+
+def make_clop_image(out_positive_file, out_clop_image_dir):
+    with open(out_positive_file, 'r') as coordf:
         for line in coordf:
-            values = line.rstrip().split('\t')
-            image_name = values[0]
-            xmin = float(values[1])
-            xmax = float(values[2])
-            ymin = float(values[3])
-            ymax = float(values[4])
-            range = (ymin, ymax, xmin, xmax)
-            image = cv2.imread(target_dir + image_name)
-            clop_image = ci.clop_image(image, range)
-            save_name = out_clop_image_dir + 'forkclop_' + image_name
-            ci.save_image(clop_image, save_name)
-
-            gray_image = ci.gray_convert(clop_image)
-            save_gray_name = out_clop_gray_image_dir + 'gray_' + image_name
-            ci.save_image(gray_image, save_gray_name)
+            values = line.rstrip().split(' ')
+            image_path = values[0]
+            x = float(values[2])
+            y = float(values[3])
+            w = float(values[4])
+            h = float(values[5])
+            if not os.path.exists(image_path):
+                print '%s is not exist' % (image_path)
+                continue
+            image = cv2.imread(image_path)
+            clop_image = common_image.clop_image(image, x, y, w, h)
+            save_name = out_clop_image_dir + 'forkclop_' + image_path.split('/')[-1]
+            common_image.save_image(clop_image, save_name)
 
 
-def make_square_file(in_db_file, out_square_file, input_size):
-    if os.path.exists(out_square_file):
-        os.remove(out_square_file)
+def make_positive_file(in_db_file, input_size, out_positive_file, target_dir):
+    if os.path.exists(out_positive_file):
+        os.remove(out_positive_file)
 
     with open(in_db_file, 'r') as inf:
         for line in inf:
@@ -70,21 +94,41 @@ def make_square_file(in_db_file, out_square_file, input_size):
             out_list.append(xmax)
             out_list.append(ymin)
             out_list.append(ymax)
-            with open(out_square_file, 'a') as outf:
-                outf.write('\t'.join(map(str, out_list)) + '\n')
+            with open(out_positive_file, 'a') as positive:
+                positive.write(' '.join([target_dir + image_name, str(1), str(xmin), str(ymin), str(xmax - xmin), str(ymax - ymin)]) + '\n')
 
 if __name__ == '__main__':
+    """
+    カスケード検出器にかけるためのdatファイルを作成する。
+    その際、学習用の確認画像も出力する。
+    direction: 対象の向き[left or right]
+    in_db_file: MySQLのダンプファイル
+    target_dir:　元となる画像ディレクトリ
+    input_size: 元の画像のサイズ(width, height)
+    out_square_file: フォークの座標ファイル
+    out_clop_image_dir: フォークの画像保存用ディレクトリ
+    out_positive_file: カスケード検出器用のpositive.datファイル
+    out_negative_file: カスケード検出器用のnegative.datファイル
+    out_negative_image_dir: negative.datの画像ディレクトリ
+    """
     root_dir = '/usr/local/wk/git_local/bike/'
-    in_db_file = root_dir + 'analysis/front_fork/data/from_db/bike_result_20170412_right.tsv'
-    target_dit = root_dir + 'analysis/front_fork/data/images/training_image/right_resize/'
-    out_square_file = root_dir + 'analysis/front_fork/data/fork_clop/square/square_right.tsv'
-    out_clop_image_dir = root_dir + 'analysis/front_fork/data/images/fork_clop/right/training_image/color/'
+    direction = 'right'
+    in_db_file = root_dir + 'analysis/front_fork/data/from_db/' + direction + '/front_fork_' + direction + '.tsv'
+    target_dir = root_dir + 'analysis/front_fork/data/images/' + direction + '/training_image/' + direction + '_resize/'
+    input_size = (400, 300)
+    out_clop_image_dir = root_dir + 'analysis/front_fork/data/cascade/' + direction + '/images/color/'
     if not os.path.exists(out_clop_image_dir):
         os.mkdir(out_clop_image_dir)
-    out_clop_gray_image_dir = root_dir + 'analysis/front_fork/data/images/fork_clop/right/training_image/gray/'
-    if not os.path.exists(out_clop_gray_image_dir):
-        os.mkdir(out_clop_gray_image_dir)
-    input_size = (400, 300)
-    # make_square_file(in_db_file, out_square_file, input_size)
-    make_clop_image(target_dit, out_square_file, out_clop_image_dir, out_clop_gray_image_dir)
+
+    out_positive_file = root_dir + '/analysis/front_fork/data/cascade/' + direction + '/datfile/positive_' + direction + '.dat'
+    out_negative_file = root_dir + '/analysis/front_fork/data/cascade/' + direction + '/datfile/negative_' + direction + '.dat'
+    out_negative_image_dir = root_dir + '/analysis/front_fork/data/cascade/' + direction + '/images/negative/'
+
+    # positive.dat作成
+    # make_positive_file(in_db_file, input_size, out_positive_file, target_dir)
+    # フォークのみの画像作成
+    # make_clop_image(out_positive_file, out_clop_image_dir)
+
+    # negative.dat作成と画像作成
+    make_negative_file(direction, out_positive_file, out_negative_file, out_negative_image_dir, input_size)
 
